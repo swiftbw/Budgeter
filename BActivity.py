@@ -54,8 +54,8 @@ class BActivity:
                   print ( "ERROR in write except\n" )
 
 def main():
-      a = BActivity("/users/swiftbr/dev/BudgeterData/ExportData-35.csv")
-#     a = BActivity("/users/swiftb/dev/BudgeterData/Chase9789_Activity20230204.CSV")
+#     a = BActivity("/users/swiftbr/dev/BudgeterData/ExportData-35.csv")
+      a = BActivity("/users/swiftbr/dev/BudgeterData/Chase9789_Activity20230204.CSV")
 #      print ( a._indexes )
 #      print ( a._max_header )
 #      print ( len ( a._records ) )
