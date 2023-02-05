@@ -14,6 +14,17 @@ class QBActivity:
             self._records = []
             self._current_header = []
 
+            with open(self._filename, mode='r') as csv_file:
+                  csv_reader = csv.DictReader(csv_file)
+                  line_count = 0
+                  for row in csv_reader:
+                        if line_count == 0:
+                              print(f'Column names are {", ".join(row)}')
+                              line_count += 1
+                        print(f'\t{row["name"]} works in the {row["department"]} department, and was born in {row["birthday month"]}.')
+                        line_count += 1
+                  print(f'Processed {line_count} lines.')
+'''
             in_dataset = 0
             
             try:
@@ -55,7 +66,7 @@ class QBActivity:
             except IOError as e:
                   print ( "I/O error({0}): {1}".format(e.errno, e.strerror) )
                   print ( "Unable to open %s for reading.", filestr )
-
+'''
       def write ( self, filename ):
             try:
                   filehandle = open(filename, "w")
@@ -88,10 +99,11 @@ class QBActivity:
                   print ( "ERROR in write except\n" )
 
 def main():
-      a = QBActivity("/users/swiftb/dev/QBProcessor/TMOSAD2019.csv")
-      print ( a._indexes )
-      print ( a._max_header )
-      print ( len ( a._records ) )
+      a = BActivity("/users/swiftb/dev/BudgeterData/ExportData-35.csv")
+#     a = BActivity("/users/swiftb/dev/BudgeterData/Chase9789_Activity20230204.CSV")
+#      print ( a._indexes )
+#      print ( a._max_header )
+#      print ( len ( a._records ) )
       a.write ( "/users/swiftb/dev/QBProcessor/TMOSAD2019_exp.txt" )
 
 if __name__ == "__main__":
