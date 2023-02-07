@@ -15,7 +15,38 @@ class BActivity:
             self._crecords = []
             self._current_header = []
             self._headerMap = {'CHASE' : {'Date' : 'Transaction Date', 'Counterparty' : 'Description', 'Category' : 'Category', 'Amount' : 'Amount', 'Source' : 'None', 'Orig_Cparty' : 'Description' }, 'BOFA' : {'Date' : 'Date', 'Counterparty' : 'Original Description', 'Category' : 'Category', 'Amount' : 'Amount', 'Source' : 'Account Name', 'Orig_Cparty' : 'Original Description' }}
-
+            self._counterpartyMaps = { '*AMZN' : 'Amazon',
+                                             '*MARSHALLS' : 'Marshalls',
+                                             '*VALLI' : 'Valli',
+                                             '*Amazon.com' : 'Amazon',
+                                             '*STARBUCKS' : 'Starbucks',
+                                             '*BMOH' : 'ATM',
+                                             '*MIOMA' : 'Personal Trainer',
+                                             '*PHLVARIABLE' : 'Phoenix Life Insurance',
+                                             '*CUBESMART' : 'Cube Smart Storage',
+                                             '*WHOLEFDS' : 'Whole Foods',
+                                             '*TJMAXX' : 'TJ Maxx',
+                                             '*EXXON' : 'Exxon',
+                                             '*DES:MORTGAGE' : 'Mortgage',
+                                             '*ATM Oper Rebate' : 'ATM Refund',
+                                             '*College Savings' : 'Noah 529',
+                                             '*CHASE CREDIT CRD' : 'Chase Card Payment',
+                                             '*WALGREENS' : 'Walgreens',
+                                             '*TRADER JOE' : 'Trader Joes',
+                                             '*ALDI' : 'Aldi',
+                                             '*DES:BANK OF AM ID:xxxxxxxxxx0495' : 'Paycheck',
+                                             '*ATM Wthdrwl Fee Waiver' : 'ATM Fee Waiver',
+                                             '*COMED            DES' : 'ComEd',
+                                             '*365 Market' : '365 Market',
+                                             '*MCDONALD' : 'McDonalds',
+                                             '*FRESH MARKET' : 'Tonys Fresh Market',
+                                             '*SHELL OIL' : 'Shell Oil',
+                                             '*GOODWILL' : 'Good Will',
+                                             '*JEWEL' : 'Jewel Osco'
+                                             }
+            self._categoryMaps = {}
+            self._counterpartyOverrides = {}
+            
             with open(self._filename, mode='r') as csv_file:
                   csv_reader = csv.DictReader(csv_file)
                   line_count = 0
@@ -32,11 +63,9 @@ class BActivity:
                         self._crecords.append(cdentry)
                         self._records.append(row)
                         if line_count == 0:
-                              print(f'Column names are {", ".join(row)}')
                               line_count += 1
                         else:
                               line_count += 1
-                        print ( cdentry )
                   print(f'Processed {line_count} lines.')
                   print(len(self._records))
       def getRecords(self):
@@ -63,6 +92,30 @@ class BActivity:
                   filehandle.close()
             except:
                   print ( "ERROR in write except\n" )
+      def updateCounterparties ( self ):
+            for row in self._crecords:
+                  for pattern in self._counterpartyMaps:
+                        if WCMatch ( row [ 'Counterparty' ], pattern ):
+                              row [ 'Counterparty' ] = self._counterpartyMaps [ pattern ]
+            
+            return
+
+      def updateCategory ( self ):
+            return
+
+      def updateOverrides ( self ):
+            return
+
+def WCMatch ( instr = "", pattern = "" ):
+      response = True
+      if pattern[0] == '*':
+            wildcard = True
+            pattern = pattern[1:]
+
+      if instr.find(pattern) == -1:
+            return False
+      else:
+            return True
 
 def main():
       filename = os.environ['HOME']
@@ -74,6 +127,7 @@ def main():
       b = BActivity(cfilename, 'CHASE')
       a.load(b.getRecords())
       a.pruneSources()
+      a.updateCounterparties()
       a.write(ofilename)
 
 if __name__ == "__main__":
