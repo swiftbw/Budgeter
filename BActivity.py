@@ -11,6 +11,7 @@ class BActivity:
             self._max_header = 0
             self._indexes = []
             self._records = []
+            self._inSources = ['Bank of America - Bank - Adv Tiered Interest Chkg', 'Bank of America - Credit Card - Premium Rewards Visa Signature', 'Chase']
             self._crecords = []
             self._current_header = []
             self._headerMap = {'CHASE' : {'Date' : 'Transaction Date', 'Counterparty' : 'Description', 'Category' : 'Category', 'Amount' : 'Amount', 'Source' : 'None', 'Orig_Cparty' : 'Description' }, 'BOFA' : {'Date' : 'Date', 'Counterparty' : 'Original Description', 'Category' : 'Category', 'Amount' : 'Amount', 'Source' : 'Account Name', 'Orig_Cparty' : 'Original Description' }}
@@ -43,15 +44,21 @@ class BActivity:
       def load(self, crecords):
             for record in crecords:
                   self._crecords.append(record)
-                  
+      def pruneSources(self):
+            nrecords = []
+            
+            for record in self._crecords:
+                  if record['Source'] in self._inSources:
+                        nrecords.append(record)
+            self._crecords = nrecords
       def write ( self, filename ):
             try:
                   filehandle = open(filename, "w")
 
-                  filehandle.write (', '.join(self._headers) + '\n')
+                  filehandle.write ('"' + '","'.join(self._headers) + '"\n')
 
                   for i in self._crecords:
-                        filehandle.write (', '.join(i.values()) + '\n')
+                        filehandle.write ('"' + '","'.join(i.values()) + '"\n')
                         
                   filehandle.close()
             except:
@@ -66,6 +73,7 @@ def main():
       a = BActivity(bfilename, 'BOFA')
       b = BActivity(cfilename, 'CHASE')
       a.load(b.getRecords())
+      a.pruneSources()
       a.write(ofilename)
 
 if __name__ == "__main__":
