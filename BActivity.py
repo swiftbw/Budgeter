@@ -44,7 +44,35 @@ class BActivity:
                                              '*GOODWILL' : 'Good Will',
                                              '*JEWEL' : 'Jewel Osco'
                                              }
-            self._categoryMaps = {}
+            self._categoryMaps = { 'Amazon':'Shopping',
+                                             'Marshalls':'Shopping',
+                                             'Valli':'Groceries',
+                                             'Amazon':'Shopping',
+                                             'Starbucks':'Dining',
+                                             'ATM':'Cash Withdrawals',
+                                             'Personal Trainer':'Fitness',
+                                             'Phoenix Life Insurance':'Insurance',
+                                             'Cube Smart Storage':'Utilities',
+                                             'Whole Foods':'Groceries',
+                                             'TJ Maxx':'Shopping',
+                                             'Exxon':'Gas',
+                                             'Mortgage':'Mortgage',
+                                             'ATM Refund':'Cash Withdrawals',
+                                             'Noah 529':'Education',
+                                             'Chase Card Payment':'Transfers',
+                                             'Walgreens':'Health',
+                                             'Trader Joes':'Groceries',
+                                             'Aldi':'Groceries',
+                                             'Paycheck':'Income',
+                                             'ATM Fee Waiver':'Cash Withdrawals',
+                                             'ComEd':'Utilities',
+                                             '365 Market':'Groceries',
+                                             'McDonalds':'Dining',
+                                             'Tonys Fresh Market':'Groceries',
+                                             'Shell Oil':'Gas',
+                                             'Good Will':'Shopping',
+                                             'Jewel Osco':'Groceries'
+                                             }
             self._counterpartyOverrides = {}
             
             with open(self._filename, mode='r') as csv_file:
@@ -100,7 +128,13 @@ class BActivity:
             
             return
 
-      def updateCategory ( self ):
+      def updateCategories ( self ):
+            for row in self._crecords:
+                  row [ 'Category' ] = 'Unassigned'
+                  for pattern in self._categoryMaps:
+                        if WCMatch ( row [ 'Counterparty' ], pattern ):
+                              row [ 'Category' ] = self._categoryMaps [ pattern ]
+            
             return
 
       def updateOverrides ( self ):
@@ -128,6 +162,7 @@ def main():
       a.load(b.getRecords())
       a.pruneSources()
       a.updateCounterparties()
+      a.updateCategories()
       a.write(ofilename)
 
 if __name__ == "__main__":
