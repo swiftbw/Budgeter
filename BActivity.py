@@ -41,6 +41,7 @@ class BActivity:
                                              '*MCDONALD' : 'McDonalds',
                                              '*FRESH MARKET' : 'Tonys Fresh Market',
                                              '*SHELL OIL' : 'Shell Oil',
+                                             '*BRK 2717' : 'Merrill LOC',
                                              '*GOODWILL' : 'Good Will',
                                              '*JEWEL' : 'Jewel Osco'
                                              }
