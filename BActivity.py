@@ -126,20 +126,42 @@ class BActivity:
                   for pattern in self._counterpartyMaps:
                         if WCMatch ( row [ 'Counterparty' ], pattern ):
                               row [ 'Counterparty' ] = self._counterpartyMaps [ pattern ]
-            
             return
-
+      def uploadCounterpartyMaps ( self, filename ):
+            map = self.uploadMaps ( filename )
+            self._counterpartyMaps = {}
+            for i in map:
+                  self._counterpartyMaps[i['Counterparty']] = i['Map']
+                                              
+            return
       def updateCategories ( self ):
             for row in self._crecords:
                   row [ 'Category' ] = 'Unassigned'
                   for pattern in self._categoryMaps:
                         if WCMatch ( row [ 'Counterparty' ], pattern ):
                               row [ 'Category' ] = self._categoryMaps [ pattern ]
-            
             return
-
+      def uploadCategoryMaps ( self, filename ):
+            map = self.uploadMaps ( filename )
+            self._categoryMaps = {}
+            for i in map:
+                  self._categoryMaps[i['Counterparty']] = i['Category']
+                                              
+            return
       def updateOverrides ( self ):
             return
+      def uploadOverrideMaps ( self, filename ):
+            return
+      def uploadMaps ( self, filename ):
+            map = []
+            with open(filename, mode='r') as csv_file:
+                  csv_reader = csv.DictReader(csv_file)
+                  line_count = 0
+                  for row in csv_reader:
+                        map.append(row)
+            csv_file.close
+            return map
+      
 
 def WCMatch ( instr = "", pattern = "" ):
       response = True
@@ -158,10 +180,15 @@ def main():
       bfilename = filename + 'ExportData-35.csv'
       cfilename = filename + 'Chase9789_Activity20230204.CSV'
       ofilename = filename + 'MergedBudgetData.csv'
+      catfilename = filename + 'CategoryMaps.csv'
+      countfilename = filename + 'CounterpartyMaps.csv'
+      overfilename = filename + 'OverrideMaps.csv'
       a = BActivity(bfilename, 'BOFA')
       b = BActivity(cfilename, 'CHASE')
       a.load(b.getRecords())
       a.pruneSources()
+      a.uploadCounterpartyMaps(countfilename)
+      a.uploadCategoryMaps(catfilename)
       a.updateCounterparties()
       a.updateCategories()
       a.write(ofilename)
