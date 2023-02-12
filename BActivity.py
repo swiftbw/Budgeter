@@ -1,13 +1,13 @@
 '''
 Might be good to make this inherit from dict at some point...
 '''
-import csv, sys, os
+import csv, sys, os, datetime
 
 class BActivity:
       def __init__(self, filestr = "", ftype = "None"):
             self._filename = filestr
             self._ftype = ftype
-            self._headers = ['Date', 'Counterparty', 'Category', 'Amount', 'Source', 'Orig_Cparty']
+            self._headers = ['Date', 'Month', 'Counterparty', 'Category', 'Amount', 'Source', 'Orig_Cparty']
             self._max_header = 0
             self._indexes = []
             self._records = []
@@ -82,13 +82,20 @@ class BActivity:
                   for row in csv_reader:
                         cdentry = {}
                         for key in self._headers:
-                              if key != 'Source':
-                                    cdentry[key] = row[self._headerMap[self._ftype][key]]
+                              if key == 'Month':
+                                    dt = row[self._headerMap[self._ftype]['Date']]
+                                    print ( dt )
+                                    dto = datetime.datetime.strptime(dt, '%m/%d/%Y')
+                                    month = dto.strftime('%b')
+                                    cdentry[key] = month
                               else:
-                                    if self._ftype == 'CHASE':
-                                          cdentry[key] = "Chase"
-                                    else:
+                                    if key != 'Source':
                                           cdentry[key] = row[self._headerMap[self._ftype][key]]
+                                    else:
+                                          if self._ftype == 'CHASE':
+                                                cdentry[key] = "Chase"
+                                          else:
+                                                cdentry[key] = row[self._headerMap[self._ftype][key]]
                         self._crecords.append(cdentry)
                         self._records.append(row)
                         if line_count == 0:
@@ -176,9 +183,14 @@ def WCMatch ( instr = "", pattern = "" ):
 
 def main():
       filename = os.environ['HOME']
-      filename += '/dev/BudgeterData/'
+      '''
+      filename += '/Library/Mobile Documents/com~apple~cloudDocs/Documents/BudgetData/'
       bfilename = filename + 'ExportData-35.csv'
       cfilename = filename + 'Chase9789_Activity20230204.CSV'
+      '''
+      filename += '/Library/Mobile Documents/com~apple~cloudDocs/Documents/BudgetData2022/'
+      bfilename = filename + 'ExportData-36.csv'
+      cfilename = filename + 'Chase9789_Activity2022.CSV'
       ofilename = filename + 'MergedBudgetData.csv'
       catfilename = filename + 'CategoryMaps.csv'
       countfilename = filename + 'CounterpartyMaps.csv'
