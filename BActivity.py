@@ -76,7 +76,7 @@ class BActivity:
                                              }
             self._counterpartyOverrides = {}
             
-            with open(self._filename, mode='r') as csv_file:
+            with open(self._filename, mode='r', encoding = 'utf-8-sig') as csv_file:
                   csv_reader = csv.DictReader(csv_file)
                   line_count = 0
                   for row in csv_reader:
@@ -84,7 +84,6 @@ class BActivity:
                         for key in self._headers:
                               if key == 'Month':
                                     dt = row[self._headerMap[self._ftype]['Date']]
-                                    print ( dt )
                                     dto = datetime.datetime.strptime(dt, '%m/%d/%Y')
                                     month = dto.strftime('%b')
                                     cdentry[key] = month
@@ -161,14 +160,13 @@ class BActivity:
             return
       def uploadMaps ( self, filename ):
             map = []
-            with open(filename, mode='r') as csv_file:
+            with open(filename, mode='r', encoding='utf-8-sig') as csv_file:
                   csv_reader = csv.DictReader(csv_file)
                   line_count = 0
                   for row in csv_reader:
                         map.append(row)
             csv_file.close
             return map
-      
 
 def WCMatch ( instr = "", pattern = "" ):
       response = True
@@ -184,9 +182,11 @@ def WCMatch ( instr = "", pattern = "" ):
 def main():
       filename = os.environ['HOME']
       '''
-      filename += '/Library/Mobile Documents/com~apple~cloudDocs/Documents/BudgetData/'
-      bfilename = filename + 'ExportData-35.csv'
-      cfilename = filename + 'Chase9789_Activity20230204.CSV'
+      filename += '/Library/Mobile Documents/com~apple~cloudDocs/Documents/'
+      cfilename = filename + 'BudgeterConfig/'
+      catfilename = cfilename + 'CategoryMaps.csv'
+      countfilename = cfilename + 'CounterpartyMaps.csv'
+      overfilename = cfilename + 'OverrideMaps.csv'
       '''
       filename += '/Library/Mobile Documents/com~apple~cloudDocs/Documents/BudgetData2022/'
       bfilename = filename + 'ExportData-36.csv'
