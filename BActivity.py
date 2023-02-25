@@ -181,20 +181,22 @@ def WCMatch ( instr = "", pattern = "" ):
 
 def main():
       filename = os.environ['HOME']
-      '''
       filename += '/Library/Mobile Documents/com~apple~cloudDocs/Documents/'
       cfilename = filename + 'BudgeterConfig/'
       catfilename = cfilename + 'CategoryMaps.csv'
       countfilename = cfilename + 'CounterpartyMaps.csv'
       overfilename = cfilename + 'OverrideMaps.csv'
-      '''
-      filename += '/Library/Mobile Documents/com~apple~cloudDocs/Documents/BudgetData2022/'
-      bfilename = filename + 'ExportData-36.csv'
-      cfilename = filename + 'Chase9789_Activity2022.CSV'
-      ofilename = filename + 'MergedBudgetData.csv'
-      catfilename = filename + 'CategoryMaps.csv'
-      countfilename = filename + 'CounterpartyMaps.csv'
-      overfilename = filename + 'OverrideMaps.csv'
+      #dirname = 'BudgetData2022/'
+      #bofafilename = 'ExportData-36.csv'
+      #chasefilename = 'Chase9789_Activity2022.CSV'
+      dirname = 'BudgetData2023/'
+      bofafilename = 'ExportData-37.csv'
+      chasefilename = 'Chase9789_Activity2023_0225.CSV'
+      iofilename = filename + dirname
+      bfilename = iofilename + bofafilename
+      cfilename = iofilename + chasefilename
+      ofilename = iofilename + 'MergedBudgetData.csv'
+      print (catfilename + '\n' + countfilename + '\n' + overfilename + '\n' )
       a = BActivity(bfilename, 'BOFA')
       b = BActivity(cfilename, 'CHASE')
       a.load(b.getRecords())
