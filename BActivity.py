@@ -14,6 +14,7 @@ class BActivity:
             self._inSources = ['Bank of America - Bank - Adv Tiered Interest Chkg', 'Bank of America - Credit Card - Premium Rewards Visa Signature', 'Chase']
             self._crecords = []
             self._current_header = []
+            self._validCategories = ['Category', 'ATM', 'Auto', 'Charity', 'Deposits', 'Dining', 'Education', 'Entertainment', 'Fees', 'Fitness', 'Gas', 'Groceries', 'Health', 'Home', 'Insurance', 'Interest', 'Misc', 'Mortgage', 'Music Lessons', 'Paycheck', 'Payments', 'Pets', 'Shopping', 'Subscriptions', 'Taxes', 'Transfers', 'Travel', 'Unassigned', 'Utilities', 'GrandTotal' ]
             self._headerMap = {'CHASE' : {'Date' : 'Transaction Date', 'Counterparty' : 'Description', 'Category' : 'Category', 'Amount' : 'Amount', 'Source' : 'None', 'Orig_Cparty' : 'Description' }, 'BOFA' : {'Date' : 'Date', 'Counterparty' : 'Original Description', 'Category' : 'Category', 'Amount' : 'Amount', 'Source' : 'Account Name', 'Orig_Cparty' : 'Original Description' }}
             self._counterpartyMaps = { '*AMZN' : 'Amazon',
                                              '*MARSHALLS' : 'Marshalls',
@@ -150,9 +151,26 @@ class BActivity:
       def uploadCategoryMaps ( self, filename ):
             map = self.uploadMaps ( filename )
             self._categoryMaps = {}
+
             for i in map:
-                  self._categoryMaps[i['Counterparty']] = i['Category']
-                                              
+                  ky = i['Counterparty']
+                  vl = i['Category']
+
+                  if ( self._validCategories.count ( vl ) != 0 ):
+                        self._categoryMaps[i['Counterparty']] = i['Category']
+                  else:
+                        print ( 'Unable to find Category ' + vl + ' in valid Categories in Category Map entry:  ' + ky + ', ' + vl + '.  Excluding.' )
+            return
+      def getValidCategories ( self, filename ):
+            map = self.uploadMaps ( filename )
+            self._validCategories = []
+
+            print ("Uploading Categories from; "+filename)
+
+            for i in map:
+                  vl = i['Category']
+                  print ('DEBUG: ' + 'Valid Category uploaded:  ' + vl )
+                  self._validCategories.append ( i['Category'] )
             return
       def updateOverrides ( self ):
             return
@@ -185,23 +203,29 @@ def main():
       cfilename = filename + 'BudgeterConfig/'
       catfilename = cfilename + 'CategoryMaps.csv'
       countfilename = cfilename + 'CounterpartyMaps.csv'
+      vcfilename = cfilename + 'BudgetCategories.csv'
       overfilename = cfilename + 'OverrideMaps.csv'
       #dirname = 'BudgetData2022/'
       #bofafilename = 'ExportData-36.csv'
       #chasefilename = 'Chase9789_Activity2022.CSV'
       dirname = 'BudgetData2023/'
-      bofafilename = 'ExportData-37.csv'
-      chasefilename = 'Chase9789_Activity2023_20230311.CSV'
+      bofafilename = 'ExportData-38.csv'
+      chasefilename1 = 'Chase7536_Activity20230403.CSV'
+      chasefilename2 = 'Chase1964_Activity20230403.CSV'
       iofilename = filename + dirname
       bfilename = iofilename + bofafilename
-      cfilename = iofilename + chasefilename
+      c1filename = iofilename + chasefilename1
+      c2filename = iofilename + chasefilename2
       ofilename = iofilename + 'MergedBudgetData.csv'
       print (catfilename + '\n' + countfilename + '\n' + overfilename + '\n' )
       a = BActivity(bfilename, 'BOFA')
-      b = BActivity(cfilename, 'CHASE')
+      b = BActivity(c1filename, 'CHASE')
+      c = BActivity(c2filename, 'CHASE')
       a.load(b.getRecords())
+      a.load(c.getRecords())
       a.pruneSources()
       a.uploadCounterpartyMaps(countfilename)
+      a.getValidCategories ( vcfilename )
       a.uploadCategoryMaps(catfilename)
       a.updateCounterparties()
       a.updateCategories()
