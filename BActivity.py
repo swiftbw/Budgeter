@@ -75,7 +75,7 @@ class BActivity:
                                              'Good Will':'Shopping',
                                              'Jewel Osco':'Groceries'
                                              }
-            self._counterpartyOverrides = {}
+            self._overrideMaps = {}
             
             with open(self._filename, mode='r', encoding = 'utf-8-sig') as csv_file:
                   csv_reader = csv.DictReader(csv_file)
@@ -139,8 +139,8 @@ class BActivity:
             self._counterpartyMaps = {}
             for i in map:
                   self._counterpartyMaps[i['Counterparty']] = i['Map']
-                                              
             return
+
       def updateCategories ( self ):
             for row in self._crecords:
                   row [ 'Category' ] = 'Unassigned'
@@ -161,6 +161,7 @@ class BActivity:
                   else:
                         print ( 'Unable to find Category ' + vl + ' in valid Categories in Category Map entry:  ' + ky + ', ' + vl + '.  Excluding.' )
             return
+      
       def getValidCategories ( self, filename ):
             map = self.uploadMaps ( filename )
             self._validCategories = []
@@ -172,10 +173,14 @@ class BActivity:
                   print ('DEBUG: ' + 'Valid Category uploaded:  ' + vl )
                   self._validCategories.append ( i['Category'] )
             return
-      def updateOverrides ( self ):
+
+      def applyOverrides ( self ):
             return
-      def uploadOverrideMaps ( self, filename ):
-            return
+      
+      def uploadOverrides ( self, filename ):
+            map = self.uploadMaps ( filename )
+            self._overrideMaps = {}
+            
       def uploadMaps ( self, filename ):
             map = []
             with open(filename, mode='r', encoding='utf-8-sig') as csv_file:
@@ -224,12 +229,14 @@ def main():
       a.load(b.getRecords())
       a.load(c.getRecords())
       a.pruneSources()
-      a.uploadCounterpartyMaps(countfilename)
+      a.uploadCounterpartyMaps ( countfilename )
       a.getValidCategories ( vcfilename )
-      a.uploadCategoryMaps(catfilename)
-      a.updateCounterparties()
-      a.updateCategories()
-      a.write(ofilename)
+      a.uploadCategoryMaps ( catfilename )
+      a.uploadOverrides ( overfilename )
+      a.updateCounterparties ( )
+      a.updateCategories ( )
+      a.applyOverrides ( )
+      a.write ( ofilename )
 
 if __name__ == "__main__":
       main()
