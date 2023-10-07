@@ -204,7 +204,7 @@ def WCMatch ( instr = "", pattern = "" ):
 
 def main():
       filename = os.environ['HOME']
-      filename += '/Library/Mobile Documents/com~apple~cloudDocs/Documents/'
+      filename += '/Library/Mobile Documents/com~apple~cloudDocs/Documents/Finances/BudgetTracking/'
       cfilename = filename + 'BudgeterConfig/'
       catfilename = cfilename + 'CategoryMaps.csv'
       countfilename = cfilename + 'CounterpartyMaps.csv'
@@ -216,7 +216,7 @@ def main():
       dirname = 'BudgetData2023/'
       bofafilename = 'ExportData-38.csv'
       chasefilename1 = 'Chase7536_Activity20230902.CSV'
-      chasefilename2 = 'Chase1964_Activity20230902.CSV'
+      chasefilename2 = 'Chase1964_Activity20230925.CSV'
       iofilename = filename + dirname
       bfilename = iofilename + bofafilename
       c1filename = iofilename + chasefilename1
