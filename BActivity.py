@@ -76,34 +76,36 @@ class BActivity:
                                              'Jewel Osco':'Groceries'
                                              }
             self._overrideMaps = {}
-            
-            with open(self._filename, mode='r', encoding = 'utf-8-sig') as csv_file:
-                  csv_reader = csv.DictReader(csv_file)
-                  line_count = 0
-                  for row in csv_reader:
-                        cdentry = {}
-                        for key in self._headers:
-                              if key == 'Month':
-                                    dt = row[self._headerMap[self._ftype]['Date']]
-                                    dto = datetime.datetime.strptime(dt, '%m/%d/%Y')
-                                    month = dto.strftime('%b')
-                                    cdentry[key] = month
-                              else:
-                                    if key != 'Source':
-                                          cdentry[key] = row[self._headerMap[self._ftype][key]]
+
+            if (self._filename != ""):
+                  with open(self._filename, mode='r', encoding = 'utf-8-sig') as csv_file:
+                        csv_reader = csv.DictReader(csv_file)
+                        line_count = 0
+                        for row in csv_reader:
+                              cdentry = {}
+                              for key in self._headers:
+                                    if key == 'Month':
+                                          dt = row[self._headerMap[self._ftype]['Date']]
+                                          dto = datetime.datetime.strptime(dt, '%m/%d/%Y')
+                                          month = dto.strftime('%b')
+                                          cdentry[key] = month
                                     else:
-                                          if self._ftype == 'CHASE':
-                                                cdentry[key] = "Chase"
-                                          else:
+                                          if key != 'Source':
                                                 cdentry[key] = row[self._headerMap[self._ftype][key]]
-                        self._crecords.append(cdentry)
-                        self._records.append(row)
-                        if line_count == 0:
-                              line_count += 1
-                        else:
-                              line_count += 1
+                                          else:
+                                                if self._ftype == 'CHASE':
+                                                      cdentry[key] = "Chase"
+                                                else:
+                                                      cdentry[key] = row[self._headerMap[self._ftype][key]]
+                              self._crecords.append(cdentry)
+                              self._records.append(row)
+                              if line_count == 0:
+                                    line_count += 1
+                              else:
+                                    line_count += 1
                   print(f'Processed {line_count} lines.')
-                  print(len(self._records))
+            else:
+                  print('BActivity object created with no filename.')
       def getRecords(self):
             return self._crecords
       def load(self, crecords):
@@ -214,20 +216,24 @@ def main():
       #bofafilename = 'ExportData-36.csv'
       #chasefilename = 'Chase9789_Activity2022.CSV'
       dirname = 'BudgetData2023/'
-      bofafilename = 'ExportData-38.csv'
-      chasefilename1 = 'Chase7536_Activity20230902.CSV'
-      chasefilename2 = 'Chase1964_Activity20230925.CSV'
+      bofafilenames = ['ExportData-20230101-20230930_BofA.csv', 'ExportData-39.csv']
+      chasefilenames = ['Chase1964_Activity20230101_20230630_20231008.CSV',
+                        'Chase1964_Activity20230701_20230930_20231008.CSV',
+                        'Chase1964_Activity20231001_20231008_20231008.CSV',
+                        'Chase7536_Activity20230101_20230930_20231008.CSV',
+                        'Chase7536_Activity20230101_20230930_20231008.CSV',
+                        
       iofilename = filename + dirname
-      bfilename = iofilename + bofafilename
-      c1filename = iofilename + chasefilename1
-      c2filename = iofilename + chasefilename2
       ofilename = iofilename + 'MergedBudgetData.csv'
       print (catfilename + '\n' + countfilename + '\n' + overfilename + '\n' )
-      a = BActivity(bfilename, 'BOFA')
-      b = BActivity(c1filename, 'CHASE')
-      c = BActivity(c2filename, 'CHASE')
-      a.load(b.getRecords())
-      a.load(c.getRecords())
+      a = BActivity()
+      for fn in bofafilenames:
+            b = BActivity(iofilename+fn, 'BOFA')
+            a.load(b.getRecords())
+      for fn in chasefilenames:
+            c = BActivity(iofilename+fn, 'CHASE')
+            a.load(c.getRecords())
+      
       a.pruneSources()
       a.uploadCounterpartyMaps ( countfilename )
       a.getValidCategories ( vcfilename )
