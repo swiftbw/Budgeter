@@ -106,8 +106,17 @@ class BActivity:
                   print(f'Processed {line_count} lines.')
             else:
                   print('BActivity object created with no filename.')
-      def getRecords(self):
-            return self._crecords
+#      def getRecords(self):
+#            return self._crecords
+      def getRecords(self, categ=None):
+            recs = []
+            if categ == None:
+                  return self._crecords
+            else:
+                  for i in self._crecords:
+                        if categ == i['Category']:
+                              recs.append(i)
+                  return recs
       def load(self, crecords):
             for record in crecords:
                   self._crecords.append(record)
@@ -118,18 +127,34 @@ class BActivity:
                   if record['Source'] in self._inSources:
                         nrecords.append(record)
             self._crecords = nrecords
-      def write ( self, filename ):
-            try:
-                  filehandle = open(filename, "w")
+      def write ( self, filename, cols=None ):
+            if cols == None:
+                  try:
+                        filehandle = open(filename, "w")
 
-                  filehandle.write ('"' + '","'.join(self._headers) + '"\n')
+                        filehandle.write ('"' + '","'.join(self._headers) + '"\n')
 
-                  for i in self._crecords:
-                        filehandle.write ('"' + '","'.join(i.values()) + '"\n')
+                        for i in self._crecords:
+                              filehandle.write ('"' + '","'.join(i.values()) + '"\n')
                         
-                  filehandle.close()
-            except:
-                  print ( "ERROR in write except\n" )
+                        filehandle.close()
+                  except:
+                        print ( "ERROR in write except\n" )
+            else:
+                  try:
+                        filehandle = open(filename, "w")
+
+                        filehandle.write ('"' + '","'.join(cols) + '"\n')
+
+                        for i in self._crecords:
+                              vals = []
+                              for j in cols:
+                                    vals.append(i[j])
+                              filehandle.write ('"' + '","'.join(vals) + '"\n')
+                        
+                        filehandle.close()
+                  except:
+                        print ( "ERROR in write except\n" )
       def updateCounterparties ( self ):
             for row in self._crecords:
                   for pattern in self._counterpartyMaps:
@@ -244,6 +269,12 @@ def main():
       a.updateCategories ( )
       a.applyOverrides ( )
       a.write ( ofilename )
+
+      u = BActivity()
+      u.load(a.getRecords('Unassigned'))
+#      u.write(iofilename+'UnassignedCounterparties.csv')
+      u.write(iofilename+'UnassignedCounterparties.csv', ['Counterparty','Counterparty'])
+      u.write(iofilename+'UnassignedCategories.csv', ['Counterparty','Category'])
 
 if __name__ == "__main__":
       main()
