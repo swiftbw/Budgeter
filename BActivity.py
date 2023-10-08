@@ -222,6 +222,7 @@ def main():
                         'Chase1964_Activity20231001_20231008_20231008.CSV',
                         'Chase7536_Activity20230101_20230930_20231008.CSV',
                         'Chase7536_Activity20230101_20230930_20231008.CSV',
+                        ]
                         
       iofilename = filename + dirname
       ofilename = iofilename + 'MergedBudgetData.csv'
