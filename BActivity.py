@@ -230,17 +230,15 @@ def WCMatch ( instr = "", pattern = "" ):
             return True
 
 def main():
-      filename = os.environ['HOME']
-      filename += '/Library/Mobile Documents/com~apple~cloudDocs/Documents/Finances/BudgetTracking/'
-      cfilename = filename + 'BudgeterConfig/'
-      catfilename = cfilename + 'CategoryMaps.csv'
-      countfilename = cfilename + 'CounterpartyMaps.csv'
-      vcfilename = cfilename + 'BudgetCategories.csv'
-      overfilename = cfilename + 'OverrideMaps.csv'
-      #dirname = 'BudgetData2022/'
-      #bofafilename = 'ExportData-36.csv'
-      #chasefilename = 'Chase9789_Activity2022.CSV'
-      dirname = 'BudgetData2023/'
+      rootdir = os.environ['HOME'] # root directory for all input, output, and config files.
+      budgetdir = rootdir + '/Library/Mobile Documents/com~apple~cloudDocs/Documents/Finances/BudgetTracking/'
+      configdir = budgetdir + 'BudgeterConfig/'
+      categfilename = configdir + 'CategoryMaps.csv'
+      counterfilename = configdir + 'CounterpartyMaps.csv'
+      vcfilename = configdir + 'BudgetCategories.csv'
+      overridefilename = configdir + 'OverrideMaps.csv'
+
+      datadir = 'BudgetData2023/'
       bofafilenames = ['ExportData-20230101-20230930_BofA.csv', 'ExportData-39.csv']
       chasefilenames = ['Chase1964_Activity20230101_20230630_20231008.CSV',
                         'Chase1964_Activity20230701_20230930_20231008.CSV',
@@ -249,32 +247,31 @@ def main():
                         'Chase7536_Activity20230101_20230930_20231008.CSV',
                         ]
                         
-      iofilename = filename + dirname
-      ofilename = iofilename + 'MergedBudgetData.csv'
-      print (catfilename + '\n' + countfilename + '\n' + overfilename + '\n' )
+      budgetdatadir = budgetdir + datadir
+      mbdfilename = budgetdatadir + 'MergedBudgetData.csv'
+      print (categfilename + '\n' + counterfilename + '\n' + overridefilename + '\n' )
       a = BActivity()
       for fn in bofafilenames:
-            b = BActivity(iofilename+fn, 'BOFA')
+            b = BActivity(budgetdatadir+fn, 'BOFA')
             a.load(b.getRecords())
       for fn in chasefilenames:
-            c = BActivity(iofilename+fn, 'CHASE')
+            c = BActivity(budgetdatadir+fn, 'CHASE')
             a.load(c.getRecords())
       
       a.pruneSources()
-      a.uploadCounterpartyMaps ( countfilename )
+      a.uploadCounterpartyMaps ( counterfilename )
       a.getValidCategories ( vcfilename )
-      a.uploadCategoryMaps ( catfilename )
-      a.uploadOverrides ( overfilename )
+      a.uploadCategoryMaps ( categfilename )
+      a.uploadOverrides ( overridefilename )
       a.updateCounterparties ( )
       a.updateCategories ( )
       a.applyOverrides ( )
-      a.write ( ofilename )
+      a.write ( mbdfilename )
 
       u = BActivity()
       u.load(a.getRecords('Unassigned'))
-#      u.write(iofilename+'UnassignedCounterparties.csv')
-      u.write(iofilename+'UnassignedCounterparties.csv', ['Counterparty','Counterparty'])
-      u.write(iofilename+'UnassignedCategories.csv', ['Counterparty','Category'])
+      u.write(budgetdatadir+'UnassignedCounterparties.csv', ['Counterparty','Counterparty'])
+      u.write(budgetdatadir+'UnassignedCategories.csv', ['Counterparty','Category'])
 
 if __name__ == "__main__":
       main()
