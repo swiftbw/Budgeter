@@ -242,9 +242,9 @@ def main():
       bofafilenames = ['ExportData-20230101-20230930_BofA.csv', 'ExportData-39.csv']
       chasefilenames = ['Chase1964_Activity20230101_20230630_20231008.CSV',
                         'Chase1964_Activity20230701_20230930_20231008.CSV',
-                        'Chase1964_Activity20231001_20231202_20231202.CSV',
+                        'Chase1964_Activity20231001_20231230_20231230.CSV',
                         'Chase7536_Activity20230101_20230930_20231008.CSV',
-                        'Chase7536_Activity20231001_20231202_20231202.CSV',
+                        'Chase7536_Activity20231001_20231230_20231230.CSV',
                         ]
                         
       budgetdatadir = budgetdir + datadir
