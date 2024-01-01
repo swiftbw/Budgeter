@@ -11,11 +11,59 @@ class BActivity:
             self._max_header = 0
             self._indexes = []
             self._records = []
-            self._inSources = ['Bank of America - Bank - Adv Tiered Interest Chkg', 'Bank of America - Credit Card - Premium Rewards Visa Signature', 'Chase']
+            self._inSources = [      'Bank of America - Bank - Adv Tiered Interest Chkg',
+                                     'Bank of America - Credit Card - Premium Rewards Visa Signature',
+                                     'Chase']
             self._crecords = []
             self._current_header = []
-            self._validCategories = ['Category', 'ATM', 'Auto', 'Charity', 'Deposits', 'Dining', 'Education', 'Entertainment', 'Fees', 'Fitness', 'Gas', 'Groceries', 'Health', 'Home', 'Insurance', 'Interest', 'Misc', 'Mortgage', 'Music Lessons', 'Paycheck', 'Payments', 'Pets', 'Shopping', 'Subscriptions', 'Taxes', 'Transfers', 'Travel', 'Unassigned', 'Utilities', 'GrandTotal' ]
-            self._headerMap = {'CHASE' : {'Date' : 'Transaction Date', 'Counterparty' : 'Description', 'Category' : 'Category', 'Amount' : 'Amount', 'Source' : 'None', 'Orig_Cparty' : 'Description' }, 'BOFA' : {'Date' : 'Date', 'Counterparty' : 'Original Description', 'Category' : 'Category', 'Amount' : 'Amount', 'Source' : 'Account Name', 'Orig_Cparty' : 'Original Description' }}
+            self._validCategories = ['Category',
+                                           'ATM',
+                                           'Auto',
+                                           'Charity',
+                                           'Deposits',
+                                           'Dining',
+                                           'Education',
+                                           'Entertainment',
+                                           'Fees',
+                                           'Fitness',
+                                           'Gas',
+                                           'Groceries',
+                                           'Health',
+                                           'Home',
+                                           'Insurance',
+                                           'Interest',
+                                           'Misc',
+                                           'Mortgage',
+                                           'Music Lessons',
+                                           'Paycheck',
+                                           'Pets',
+                                           'Shopping',
+                                           'Subscriptions',
+                                           'Taxes',
+                                           'Transfers',
+                                           'Travel',
+                                           'Unassigned',
+                                           'Utilities',
+                                           'GrandTotal' ]
+            self._headerMap = {'CHASE' :
+                                     {
+                                           'Date' : 'Transaction Date',
+                                           'Counterparty' : 'Description',
+                                           'Category' : 'Category',
+                                           'Amount' : 'Amount',
+                                           'Source' : 'None',
+                                           'Orig_Cparty' : 'Description'
+                                     },
+                                     'BOFA' :
+                                     {
+                                           'Date' : 'Date',
+                                           'Counterparty' : 'Original Description',
+                                           'Category' : 'Category',
+                                           'Amount' : 'Amount',
+                                           'Source' : 'Account Name',
+                                           'Orig_Cparty' : 'Original Description'
+                                     }
+                              }
             self._counterpartyMaps = { '*AMZN' : 'Amazon',
                                              '*MARSHALLS' : 'Marshalls',
                                              '*VALLI' : 'Valli',
@@ -119,7 +167,15 @@ class BActivity:
                   return recs
       def load(self, crecords):
             for record in crecords:
+                  if self.contains(record):
+                        print ( "WARNING:  Load includes dupe record!  Skipping.")
+                        print ( record )
                   self._crecords.append(record)
+      def contains(self, newrecord):
+            for record in self._crecords:
+                  if record == newrecord:
+                        return True
+            return False
       def pruneSources(self):
             nrecords = []
             
@@ -172,7 +228,7 @@ class BActivity:
             for row in self._crecords:
                   row [ 'Category' ] = 'Unassigned'
                   for pattern in self._categoryMaps:
-                        if WCMatch ( row [ 'Counterparty' ], pattern ):
+                        if EMatch ( row [ 'Counterparty' ], pattern ):
                               row [ 'Category' ] = self._categoryMaps [ pattern ]
             return
       def uploadCategoryMaps ( self, filename ):
@@ -217,6 +273,13 @@ class BActivity:
                         map.append(row)
             csv_file.close
             return map
+
+def EMatch ( instr = "", pattern = "" ):
+      response = True
+      if instr != pattern:
+            return False
+      else:
+            return True
 
 def WCMatch ( instr = "", pattern = "" ):
       response = True
