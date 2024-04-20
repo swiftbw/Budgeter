@@ -168,7 +168,7 @@ class BActivity:
       def load(self, crecords):
             for record in crecords:
                   if self.contains(record):
-                        print ( "WARNING:  Load includes dupe record!  Skipping.")
+                        print ( "WARNING:  Load includes dupe record!")
                         print ( record )
                   self._crecords.append(record)
       def contains(self, newrecord):
@@ -301,13 +301,10 @@ def main():
       vcfilename = configdir + 'BudgetCategories.csv'
       overridefilename = configdir + 'OverrideMaps.csv'
 
-      datadir = 'BudgetData2023/'
-      bofafilenames = ['ExportData-20230101-20230930_BofA.csv', 'ExportData-39.csv']
-      chasefilenames = ['Chase1964_Activity20230101_20230630_20231008.CSV',
-                        'Chase1964_Activity20230701_20230930_20231008.CSV',
-                        'Chase1964_Activity20231001_20231230_20231230.CSV',
-                        'Chase7536_Activity20230101_20230930_20231008.CSV',
-                        'Chase7536_Activity20231001_20231230_20231230.CSV',
+      datadir = 'BudgetData2024/'
+      bofafilenames = ['ExportData-39.csv']
+      chasefilenames = ['Chase1964_Activity20240101_20240125_20240127.CSV',
+                        'Chase5436_Activity20240101_20240125_20240127.CSV'
                         ]
                         
       budgetdatadir = budgetdir + datadir
