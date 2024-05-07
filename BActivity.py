@@ -217,6 +217,21 @@ class BActivity:
                         if WCMatch ( row [ 'Counterparty' ], pattern ):
                               row [ 'Counterparty' ] = self._counterpartyMaps [ pattern ]
             return
+      def uploadBudgetMaps ( self, filename ):
+            map = self.uploadMaps ( filename )
+            self._budgetMaps = {}
+            self._counterpartyMaps = {}
+            self._categoryMaps = {}
+
+            for i in map:
+                  self._counterpartyMaps[i['CPartyMatch']] = i['Counterparty']
+                  ky = i['Counterparty']
+                  vl = i['Category']
+                  if ( self._validCategories.count ( vl ) != 0 ):
+                        self._categoryMaps[i['Counterparty']] = i['Category']
+                  else:
+                        print ( 'Unable to find Category ' + vl + ' in valid Categories in Category Map entry:  ' + ky + ', ' + vl + '.  Excluding.' )                  
+            return
       def uploadCounterpartyMaps ( self, filename ):
             map = self.uploadMaps ( filename )
             self._counterpartyMaps = {}
@@ -296,6 +311,7 @@ def main():
       rootdir = os.environ['HOME'] # root directory for all input, output, and config files.
       budgetdir = rootdir + '/Library/Mobile Documents/com~apple~cloudDocs/Documents/Finances/BudgetTracking/'
       configdir = budgetdir + 'BudgeterConfig/'
+      bmapfilename = configdir + 'BudgetMap.csv'
       categfilename = configdir + 'CategoryMaps.csv'
       counterfilename = configdir + 'CounterpartyMaps.csv'
       vcfilename = configdir + 'BudgetCategories.csv'
@@ -319,9 +335,10 @@ def main():
             a.load(c.getRecords())
       
       a.pruneSources()
-      a.uploadCounterpartyMaps ( counterfilename )
+#      a.uploadCounterpartyMaps ( counterfilename )
       a.getValidCategories ( vcfilename )
-      a.uploadCategoryMaps ( categfilename )
+#      a.uploadCategoryMaps ( categfilename )
+      a.uploadBudgetMaps ( bmapfilename )
       a.uploadOverrides ( overridefilename )
       a.updateCounterparties ( )
       a.updateCategories ( )
