@@ -123,6 +123,7 @@ class BActivity:
                                              'Good Will':'Shopping',
                                              'Jewel Osco':'Groceries'
                                              }
+            self._budgetMaps = {}
             self._overrideMaps = {}
 
             if (self._filename != ""):
@@ -231,7 +232,22 @@ class BActivity:
                         self._categoryMaps[i['Counterparty']] = i['Category']
                   else:
                         print ( 'Unable to find Category ' + vl + ' in valid Categories in Category Map entry:  ' + ky + ', ' + vl + '.  Excluding.' )                  
+                        self._categoryMaps[i['Counterparty']] = 'Unassigned'
             return
+      def writeBudgetMaps ( self, filename ):
+            for i in self._counterpartyMaps:
+                  cpty = self._counterpartyMaps[i]
+                  ctgy = self._categoryMaps[cpty]
+                  self._budgetMaps[i] = ( cpty, ctgy )
+
+            try:
+                  filehandle = open(filename, "w")
+                  filehandle.write ('CPartyMatch,Counterparty,Category\n')
+                  for i in self._budgetMaps:
+                        filehandle.write ('"' + i + '","'.join(i.values()) + '"\n')
+                        filehandle.close()
+            except:
+                  print ( "ERROR in write except\n" )
       def uploadCounterpartyMaps ( self, filename ):
             map = self.uploadMaps ( filename )
             self._counterpartyMaps = {}
@@ -318,9 +334,12 @@ def main():
       overridefilename = configdir + 'OverrideMaps.csv'
 
       datadir = 'BudgetData2024/'
-      bofafilenames = ['ExportData-39.csv']
-      chasefilenames = ['Chase1964_Activity20240101_20240125_20240127.CSV',
-                        'Chase5436_Activity20240101_20240125_20240127.CSV'
+      bofafilenames = [ 'BofAExportData-20240101-20240331.csv',
+                        'BofAExportData-20240401-20240608.csv', ]
+      chasefilenames = ['Chase1964_Activity20240101_20240331.CSV',
+                        'Chase1964_Activity20240401_20240608.CSV',
+                        'Chase5436_Activity20240101_20240331.CSV',
+                        'Chase5436_Activity20240401_20240608.CSV'
                         ]
                         
       budgetdatadir = budgetdir + datadir
@@ -335,10 +354,20 @@ def main():
             a.load(c.getRecords())
       
       a.pruneSources()
-#      a.uploadCounterpartyMaps ( counterfilename )
+      a.uploadCounterpartyMaps ( counterfilename )
       a.getValidCategories ( vcfilename )
-#      a.uploadCategoryMaps ( categfilename )
+      a.uploadCategoryMaps ( categfilename )
+      print ( 'Before\n' )
+      print ( 'CounterpartyMaps\n' )
+      print ( a._counterpartyMaps )
+      print ( '\n\n Category Maps\n' )
+      print ( a._categoryMaps )
       a.uploadBudgetMaps ( bmapfilename )
+      print ( 'After\n' )
+      print ( 'CounterpartyMaps\n' )
+      print ( a._counterpartyMaps )
+      print ( '\n\nCategory Maps\n' )
+      print ( a._categoryMaps )
       a.uploadOverrides ( overridefilename )
       a.updateCounterparties ( )
       a.updateCategories ( )
@@ -349,6 +378,7 @@ def main():
       u.load(a.getRecords('Unassigned'))
       u.write(budgetdatadir+'UnassignedCounterparties.csv', ['Counterparty','Counterparty'])
       u.write(budgetdatadir+'UnassignedCategories.csv', ['Counterparty','Category'])
+      u.writeBudgetMaps(budgetdatadir+'UnsassignedBudgetData.csv')
 
 if __name__ == "__main__":
       main()
