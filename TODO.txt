@@ -1,0 +1,1 @@
+Verify that loading from split counterparty and category files yields the same loading from the combined file.
