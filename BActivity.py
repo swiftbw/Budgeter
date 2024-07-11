@@ -5,6 +5,11 @@ import csv, sys, os, datetime
 
 class BActivity:
       def __init__(self, filestr = "", ftype = "None"):
+            '''
+            BActivity class holds a list of expense records.
+            If no filename is provided the object is initialized with no filename then no records are loaded.
+            If a filename is provided then the corresponding file (in csv format) is attempted.
+            '''
             self._filename = filestr
             self._ftype = ftype
             self._headers = ['Date', 'Month', 'Counterparty', 'Category', 'Amount', 'Source', 'Orig_Cparty']
@@ -155,9 +160,12 @@ class BActivity:
                   print(f'Processed {line_count} lines.')
             else:
                   print('BActivity object created with no filename.')
-#      def getRecords(self):
-#            return self._crecords
+
       def getRecords(self, categ=None):
+            ''' 
+            getRecords returns the list of account entries that match the categ argument, or all records if categ is not provided.
+            '''
+
             recs = []
             if categ == None:
                   return self._crecords
