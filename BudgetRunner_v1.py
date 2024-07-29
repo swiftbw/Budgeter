@@ -44,12 +44,12 @@ def main():
       a.updateCategories ( )
       a.applyOverrides ( )
       a.write ( mbdfilename )
+      a.writeBudgetMaps(budgetdatadir+'ConvertedCtgyCpty.csv')
 
       u = BActivity()
       u.load(a.getRecords('Unassigned'))
       u.write(budgetdatadir+'UnassignedCounterparties.csv', ['Counterparty','Counterparty'])
       u.write(budgetdatadir+'UnassignedCategories.csv', ['Counterparty','Category'])
-      u.writeBudgetMaps(budgetdatadir+'UnsassignedBudgetData.csv')
 
 if __name__ == "__main__":
       main()

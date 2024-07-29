@@ -195,7 +195,7 @@ class BActivity:
       def write ( self, filename, cols=None ):
             if cols == None:
                   try:
-                        filehandle = open(filename, "w")
+                        filehandle = open(filename, 'w' )
 
                         filehandle.write ('"' + '","'.join(self._headers) + '"\n')
 
@@ -207,7 +207,7 @@ class BActivity:
                         print ( "ERROR in write except\n" )
             else:
                   try:
-                        filehandle = open(filename, "w")
+                        filehandle = open(filename, 'w')
 
                         filehandle.write ('"' + '","'.join(cols) + '"\n')
 
@@ -223,9 +223,18 @@ class BActivity:
       def updateCounterparties ( self ):
             for row in self._crecords:
                   for pattern in self._counterpartyMaps:
-                        if WCMatch ( row [ 'Counterparty' ], pattern ):
+                        if WildCardMatch ( row [ 'Counterparty' ], pattern ):
                               row [ 'Counterparty' ] = self._counterpartyMaps [ pattern ]
             return
+      def counterpartyMatches ( self ):
+            matchDict = {}
+            for row in self._crecords:
+                  key = row['Counterparty']
+                  matchDict[key] = list()
+                  for pattern in self._counterpartyMaps:
+                        if WildCardMatch ( key, pattern ):
+                              matchDict[key].append(pattern)
+            return matchDict
       def uploadBudgetMaps ( self, filename ):
             map = self.uploadMaps ( filename )
             self._budgetMaps = {}
@@ -233,6 +242,7 @@ class BActivity:
             self._categoryMaps = {}
 
             for i in map:
+                  print ( i )
                   self._counterpartyMaps[i['CPartyMatch']] = i['Counterparty']
                   ky = i['Counterparty']
                   vl = i['Category']
@@ -243,33 +253,60 @@ class BActivity:
                         self._categoryMaps[i['Counterparty']] = 'Unassigned'
             return
       def writeBudgetMaps ( self, filename ):
+            ''' 
+            writeBudgetMaps loops through the counterpartyMaps dictionary, first extracting 
+            '''
+            print ( "In Write Budget Maps\n")
             for i in self._counterpartyMaps:
-                  cpty = self._counterpartyMaps[i]
-                  ctgy = self._categoryMaps[cpty]
+                  cpty = self._counterpartyMaps.get(i)
+                  if cpty == None:
+                        print ( 'Cannot find ' + i + ' in cptymap.  skipping\n')
+                        continue
+                  
+                  ctgy = self._categoryMaps.get(cpty)
+                  if ctgy == None:
+                        print ( 'Cannot find ' + cpty + ' in ctgymap.  skipping\n')
+                        continue
                   self._budgetMaps[i] = ( cpty, ctgy )
-
             try:
-                  filehandle = open(filename, "w")
+                  filehandle = open(filename, 'w')
+                  
                   filehandle.write ('CPartyMatch,Counterparty,Category\n')
+
                   for i in self._budgetMaps:
-                        filehandle.write ('"' + i + '","'.join(i.values()) + '"\n')
-                        filehandle.close()
-            except:
-                  print ( "ERROR in write except\n" )
+                        bmval = self._budgetMaps.get(i)
+                        if bmval == None:
+                              print ( "bmval is None!\n" )
+                              continue
+                        strn = '"' + i + '","' + bmval[0] + '","' + bmval[1]+'"\n'
+                        if strn == None:
+                              print ( "None string!\n")
+                        filehandle.write ( strn )
+                  filehandle.close()
+            except Exception as e:
+                  print ( e )
+                  print ( "ERROR in writeBudgetMaps except\n" )
       def uploadCounterpartyMaps ( self, filename ):
             map = self.uploadMaps ( filename )
             self._counterpartyMaps = {}
             for i in map:
-                  self._counterpartyMaps[i['Counterparty']] = i['Map']
+                  if i['Counterparty'][0] != '#':
+                        self._counterpartyMaps[i['Counterparty']] = i['Map']
             return
-
       def updateCategories ( self ):
             for row in self._crecords:
                   row [ 'Category' ] = 'Unassigned'
                   for pattern in self._categoryMaps:
-                        if EMatch ( row [ 'Counterparty' ], pattern ):
+                        if ExactMatch ( row [ 'Counterparty' ], pattern ):
                               row [ 'Category' ] = self._categoryMaps [ pattern ]
             return
+      def categoryMatches ( self ):
+            for row in self._crecords:
+                  row [ 'Category' ] = 'Unassigned'
+                  for pattern in self._categoryMaps:
+                        if ExactMatch ( row [ 'Counterparty' ], pattern ):
+                              row [ 'Category' ] = self._categoryMaps [ pattern ]
+            return ctgymatchdict
       def uploadCategoryMaps ( self, filename ):
             map = self.uploadMaps ( filename )
             self._categoryMaps = {}
@@ -278,7 +315,7 @@ class BActivity:
                   ky = i['Counterparty']
                   vl = i['Category']
 
-                  if ( self._validCategories.count ( vl ) != 0 ):
+                  if ( self._validCategories.count ( vl ) != 0 ) and ky[0] != '#':
                         self._categoryMaps[i['Counterparty']] = i['Category']
                   else:
                         print ( 'Unable to find Category ' + vl + ' in valid Categories in Category Map entry:  ' + ky + ', ' + vl + '.  Excluding.' )
@@ -310,17 +347,18 @@ class BActivity:
                   line_count = 0
                   for row in csv_reader:
                         map.append(row)
+                        print ( row )
             csv_file.close
             return map
 
-def EMatch ( instr = "", pattern = "" ):
+def ExactMatch ( instr = "", pattern = "" ):
       response = True
       if instr != pattern:
             return False
       else:
             return True
 
-def WCMatch ( instr = "", pattern = "" ):
+def WildCardMatch ( instr = "", pattern = "" ):
       response = True
       if pattern[0] == '*':
             wildcard = True
@@ -351,42 +389,6 @@ def main():
                         ]
                         
       budgetdatadir = budgetdir + datadir
-      mbdfilename = budgetdatadir + 'MergedBudgetData.csv'
-      print (categfilename + '\n' + counterfilename + '\n' + overridefilename + '\n' )
-      a = BActivity()
-      for fn in bofafilenames:
-            b = BActivity(budgetdatadir+fn, 'BOFA')
-            a.load(b.getRecords())
-      for fn in chasefilenames:
-            c = BActivity(budgetdatadir+fn, 'CHASE')
-            a.load(c.getRecords())
-      
-      a.pruneSources()
-      a.uploadCounterpartyMaps ( counterfilename )
-      a.getValidCategories ( vcfilename )
-      a.uploadCategoryMaps ( categfilename )
-      print ( 'Before\n' )
-      print ( 'CounterpartyMaps\n' )
-      print ( a._counterpartyMaps )
-      print ( '\n\n Category Maps\n' )
-      print ( a._categoryMaps )
-      a.uploadBudgetMaps ( bmapfilename )
-      print ( 'After\n' )
-      print ( 'CounterpartyMaps\n' )
-      print ( a._counterpartyMaps )
-      print ( '\n\nCategory Maps\n' )
-      print ( a._categoryMaps )
-      a.uploadOverrides ( overridefilename )
-      a.updateCounterparties ( )
-      a.updateCategories ( )
-      a.applyOverrides ( )
-      a.write ( mbdfilename )
-
-      u = BActivity()
-      u.load(a.getRecords('Unassigned'))
-      u.write(budgetdatadir+'UnassignedCounterparties.csv', ['Counterparty','Counterparty'])
-      u.write(budgetdatadir+'UnassignedCategories.csv', ['Counterparty','Category'])
-      u.writeBudgetMaps(budgetdatadir+'UnsassignedBudgetData.csv')
 
 if __name__ == "__main__":
       main()

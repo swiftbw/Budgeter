@@ -17,11 +17,15 @@ def main():
 
       datadir = 'BudgetData2024/'
       bofafilenames = [ 'BofAExportData-20240101-20240331.csv',
-                        'BofAExportData-20240401-20240608.csv', ]
+                        'BofAExportData-20240401-20240630.csv',
+                        'BofAExportData-20240701-20240729.csv'
+                        ]
       chasefilenames = ['Chase1964_Activity20240101_20240331.CSV',
-                        'Chase1964_Activity20240401_20240608.CSV',
+                        'Chase1964_Activity20240401_20240630.CSV',
+                        'Chase1964_Activity20240701_20240726.CSV',
                         'Chase5436_Activity20240101_20240331.CSV',
-                        'Chase5436_Activity20240401_20240608.CSV'
+                        'Chase5436_Activity20240401_20240630.CSV',
+                        'Chase5436_Activity20240701_20240729.CSV'
                         ]
                         
       budgetdatadir = budgetdir + datadir
@@ -36,25 +40,18 @@ def main():
             a.load(c.getRecords())
       
       a.pruneSources()
-      a.uploadCounterpartyMaps ( counterfilename )
+      # a.uploadCounterpartyMaps ( counterfilename )
       a.getValidCategories ( vcfilename )
-      a.uploadCategoryMaps ( categfilename )
-      print ( 'Before\n' )
-      print ( 'CounterpartyMaps\n' )
-      print ( a._counterpartyMaps )
-      print ( '\n\n Category Maps\n' )
-      print ( a._categoryMaps )
+      # a.uploadCategoryMaps ( categfilename )
+      print ( bmapfilename )
       a.uploadBudgetMaps ( bmapfilename )
-      print ( 'After\n' )
-      print ( 'CounterpartyMaps\n' )
-      print ( a._counterpartyMaps )
-      print ( '\n\nCategory Maps\n' )
-      print ( a._categoryMaps )
       a.uploadOverrides ( overridefilename )
       a.updateCounterparties ( )
       a.updateCategories ( )
       a.applyOverrides ( )
       a.write ( mbdfilename )
+      nbmdata = budgetdatadir + 'NewBudgetMap.csv'
+      a.writeBudgetMaps ( nbmdata )
 
       u = BActivity()
       u.load(a.getRecords('Unassigned'))
