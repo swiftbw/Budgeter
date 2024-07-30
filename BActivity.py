@@ -348,7 +348,7 @@ class BActivity:
             map = self.uploadMaps ( filename )
             self._validCategories = []
 
-            print ("Uploading Categories from; "+filename)
+            print ("Uploading Valid Categories from; "+filename)
 
             for i in map:
                   vl = i['Category']
