@@ -50,7 +50,7 @@ class BActivity:
                                            'Unassigned',
                                            'Utilities',
                                            'GrandTotal' ]
-            self._headerMap = {'CHASE' :
+            self._headerMap = {      'CHASE' :
                                      {
                                            'Date' : 'Transaction Date',
                                            'Counterparty' : 'Description',
@@ -175,11 +175,12 @@ class BActivity:
                               recs.append(i)
                   return recs
       def load(self, crecords):
+            dupecount = 0
             for record in crecords:
                   if self.contains(record):
-                        print ( "WARNING:  Load includes dupe record!")
-                        print ( record )
+                        dupecount += 1
                   self._crecords.append(record)
+            print ( str(dupecount) + " records found and loaded.\n")
       def contains(self, newrecord):
             for record in self._crecords:
                   if record == newrecord:
@@ -242,7 +243,6 @@ class BActivity:
             self._categoryMaps = {}
 
             for i in map:
-                  print ( i )
                   self._counterpartyMaps[i['CPartyMatch']] = i['Counterparty']
                   ky = i['Counterparty']
                   vl = i['Category']
@@ -252,11 +252,34 @@ class BActivity:
                         print ( 'Unable to find Category ' + vl + ' in valid Categories in Category Map entry:  ' + ky + ', ' + vl + '.  Excluding.' )                  
                         self._categoryMaps[i['Counterparty']] = 'Unassigned'
             return
-      def writeBudgetMaps ( self, filename ):
+      def writeRecordsForCat ( self, filename, cat = None, keys = [ 'Counterparty', 'Counterparty', 'Category'] ):
+            ''' 
+            writeRecordsForCat loops through all records and writes specified attributes for all records matching category. 
+            '''
+            print ( "In Write Budget Maps\n")
+
+            try:
+                  filehandle = open(filename, 'w')
+                  
+                  strn ='"' + '","'.join([str(ele) for ele in keys]) +'"\n'
+
+                  filehandle.write ( strn )      
+
+                  for i in self._crecords:
+                        if cat != None and cat != i['Category']:
+                              continue
+                        strn ='"' + '","'.join([str(i[ele]) for ele in keys]) +'"\n'
+                        filehandle.write ( strn )
+                  filehandle.close()
+            except Exception as e:
+                  print ( e )
+                  print ( "ERROR in writeBudgetMaps except\n" )
+      def writeBudgetMaps ( self, filename, cat = None ):
             ''' 
             writeBudgetMaps loops through the counterpartyMaps dictionary, first extracting 
             '''
             print ( "In Write Budget Maps\n")
+
             for i in self._counterpartyMaps:
                   cpty = self._counterpartyMaps.get(i)
                   if cpty == None:
@@ -329,7 +352,6 @@ class BActivity:
 
             for i in map:
                   vl = i['Category']
-                  print ('DEBUG: ' + 'Valid Category uploaded:  ' + vl )
                   self._validCategories.append ( i['Category'] )
             return
 
@@ -347,7 +369,6 @@ class BActivity:
                   line_count = 0
                   for row in csv_reader:
                         map.append(row)
-                        print ( row )
             csv_file.close
             return map
 

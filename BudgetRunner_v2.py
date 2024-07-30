@@ -10,8 +10,6 @@ def main():
       budgetdir = rootdir + '/Library/Mobile Documents/com~apple~cloudDocs/Documents/Finances/BudgetTracking/'
       configdir = budgetdir + 'BudgeterConfig/'
       bmapfilename = configdir + 'BudgetMap.csv'
-      categfilename = configdir + 'CategoryMaps.csv'
-      counterfilename = configdir + 'CounterpartyMaps.csv'
       vcfilename = configdir + 'BudgetCategories.csv'
       overridefilename = configdir + 'OverrideMaps.csv'
 
@@ -30,19 +28,21 @@ def main():
                         
       budgetdatadir = budgetdir + datadir
       mbdfilename = budgetdatadir + 'MergedBudgetData.csv'
-      print (categfilename + '\n' + counterfilename + '\n' + overridefilename + '\n' )
+      print (mbdfilename + '\n' + overridefilename + '\n' )
       a = BActivity()
+
       for fn in bofafilenames:
             b = BActivity(budgetdatadir+fn, 'BOFA')
             a.load(b.getRecords())
+
       for fn in chasefilenames:
             c = BActivity(budgetdatadir+fn, 'CHASE')
             a.load(c.getRecords())
       
       a.pruneSources()
-      # a.uploadCounterpartyMaps ( counterfilename )
+
       a.getValidCategories ( vcfilename )
-      # a.uploadCategoryMaps ( categfilename )
+
       print ( bmapfilename )
       a.uploadBudgetMaps ( bmapfilename )
       a.uploadOverrides ( overridefilename )
@@ -55,9 +55,7 @@ def main():
 
       u = BActivity()
       u.load(a.getRecords('Unassigned'))
-      u.write(budgetdatadir+'UnassignedCounterparties.csv', ['Counterparty','Counterparty'])
-      u.write(budgetdatadir+'UnassignedCategories.csv', ['Counterparty','Category'])
-      u.writeBudgetMaps(budgetdatadir+'UnsassignedBudgetData.csv')
+      u.writeRecordsForCat(budgetdatadir+'UnassignedBudgetData.csv')
 
 if __name__ == "__main__":
       main()
