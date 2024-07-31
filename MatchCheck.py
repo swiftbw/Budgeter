@@ -1,18 +1,40 @@
 '''
 The purpose of MatchCheck is to identify overlapping Counterparty Match functions.'''
 import csv, sys, os, datetime
-
+import BudgetUtils
 from BActivity import BActivity
 
 def main():
-      rootdir = os.environ['HOME'] # root directory for all input, output, and config files.
-      budgetdir = rootdir + '/Library/Mobile Documents/com~apple~cloudDocs/Documents/Finances/BudgetTracking/'
-      configdir = budgetdir + 'BudgeterConfig/'
-      bmapfilename = configdir + 'BudgetMap.csv'
-      categfilename = configdir + 'CategoryMaps.csv'
-      counterfilename = configdir + 'CounterpartyMaps.csv'
-      vcfilename = configdir + 'BudgetCategories.csv'
-      overridefilename = configdir + 'OverrideMaps.csv'
+      files = BudgetUtils.getBudgetFiles ( )
+
+      mbd = BudgetUtils.getCsvFileAsList ( files [ 'MergedBudgetData' ] )
+      
+      with open(self._filename, mode='r', encoding = 'utf-8-sig') as csv_file:
+          csv_reader = csv.DictReader(csv_file)
+          line_count = 0
+          for row in csv_reader:
+              cdentry = {}
+              for key in self._headers:
+                  if key == 'Month':
+                      dt = row[self._headerMap[self._ftype]['Date']]
+                      dto = datetime.datetime.strptime(dt, '%m/%d/%Y')
+                      month = dto.strftime('%b')
+                      cdentry[key] = month
+                  else:
+                      if key != 'Source':
+                          cdentry[key] = row[self._headerMap[self._ftype][key]]
+                      else:
+                          if self._ftype == 'CHASE':
+                              cdentry[key] = "Chase"
+                          else:
+                              cdentry[key] = row[self._headerMap[self._ftype][key]]
+              self._crecords.append(cdentry)
+              self._records.append(row)
+              if line_count == 0:
+                  line_count += 1
+              else:
+                  line_count += 1
+          print(f'Processed {line_count} lines.')
 
       datadir = 'BudgetData2024/'
       bofafilenames = [ 'BofAExportData-20240101-20240331.csv',

@@ -24,10 +24,15 @@ def main():
       a.getValidCategories ( files['ValidCategories'] )
 
       print ( files['BudgetMap'] )
+
+      bmap = BudgetUtils.BudgetMap (files['BudgetMap'])
+
       a.uploadBudgetMaps ( files['BudgetMap'] )
       a.uploadOverrides ( files['OverrideMaps'] )
       a.updateCounterparties ( )
+#      a.updateCounterparties ( bmap )      
       a.updateCategories ( )
+#      a.updateCategories ( bmap )      
       a.applyOverrides ( )
       a.write ( files['MergedBudgetData'] )
       nbmdata = files['BudgetDataDir'] + 'NewBudgetMap.csv'

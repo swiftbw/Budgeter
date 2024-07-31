@@ -45,6 +45,45 @@ def getBudgetFiles ( ):
 
       return files
 
+def getCsvFileAsList ( filename ):
+      map = []
+      with open(filename, mode='r', encoding='utf-8-sig') as csv_file:
+            csv_reader = csv.DictReader(csv_file)
+
+            for row in csv_reader:
+                  map.append(row)
+      csv_file.close
+      return map
+
+def ExactMatch ( instr = "", pattern = "" ):
+      response = True
+      if instr != pattern:
+            return False
+      else:
+            return True
+
+def WildCardMatch ( instr = "", pattern = "" ):
+      response = True
+      if pattern[0] == '*':
+            wildcard = True
+            pattern = pattern[1:]
+
+      if instr.find(pattern) == -1:
+            return False
+      else:
+            return True
+
+class BudgetMap:
+      def __init__( self, filename = "" ):
+            if filename != "":
+                  self._budgetmap = getCsvFileAsList ( filename )
+            else:
+                  self._budgetmap = []
+      def getMappedCounterparty ( self, cpty ):
+            return "hahahha"
+      def getMappedCategory ( self, ctgy ):
+            return "hahahahhah"
+
 def main ( ):
       files = getBudgetFiles ()
       print ( 'Budget Data Dir is:  ' + files['BudgetDataDir'] )

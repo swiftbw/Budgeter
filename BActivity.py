@@ -2,6 +2,7 @@
 Might be good to make this inherit from dict at some point...
 '''
 import csv, sys, os, datetime
+import BudgetUtils
 
 class BActivity:
       def __init__(self, filestr = "", ftype = "None"):
@@ -157,6 +158,7 @@ class BActivity:
                                     line_count += 1
                               else:
                                     line_count += 1
+                        csv_file.close()
                   print(f'Processed {line_count} lines.')
             else:
                   print('BActivity object created with no filename.')
@@ -221,11 +223,16 @@ class BActivity:
                         filehandle.close()
                   except:
                         print ( "ERROR in write except\n" )
-      def updateCounterparties ( self ):
+      def updateCounterparties ( self, bmap = None ):
             for row in self._crecords:
-                  for pattern in self._counterpartyMaps:
-                        if WildCardMatch ( row [ 'Counterparty' ], pattern ):
-                              row [ 'Counterparty' ] = self._counterpartyMaps [ pattern ]
+                  if bmap == None:
+                        for pattern in self._counterpartyMaps:
+                              if WildCardMatch ( row [ 'Counterparty' ], pattern ):
+                                    row [ 'Counterparty' ] = self._counterpartyMaps [ pattern ]
+                  else:
+                        row [ 'Counterparty' ] = bmap.getMappedCounterparty ( row [ 'Counterparty' ] )
+                        print ( 'BudgetMap class support not yet implemented!  Exitting...\n')
+                        sys.exit ( 0 )
             return
       def counterpartyMatches ( self ):
             matchDict = {}
@@ -316,12 +323,17 @@ class BActivity:
                   if i['Counterparty'][0] != '#':
                         self._counterpartyMaps[i['Counterparty']] = i['Map']
             return
-      def updateCategories ( self ):
+      def updateCategories ( self, bmap = None ):
             for row in self._crecords:
                   row [ 'Category' ] = 'Unassigned'
-                  for pattern in self._categoryMaps:
-                        if ExactMatch ( row [ 'Counterparty' ], pattern ):
-                              row [ 'Category' ] = self._categoryMaps [ pattern ]
+                  if bmap == None:
+                        for pattern in self._categoryMaps:
+                              if ExactMatch ( row [ 'Counterparty' ], pattern ):
+                                    row [ 'Category' ] = self._categoryMaps [ pattern ]
+                  else:
+                        row [ 'Category' ] = bmap.getMappedCategory ( row [ 'Category' ] )
+                        print ( 'BudgetMap Class not implemented yet!  Exitting...\n' )
+                        sys.exit ( 0 )
             return
       def categoryMatches ( self ):
             for row in self._crecords:
@@ -364,12 +376,8 @@ class BActivity:
             
       def uploadMaps ( self, filename ):
             map = []
-            with open(filename, mode='r', encoding='utf-8-sig') as csv_file:
-                  csv_reader = csv.DictReader(csv_file)
-                  line_count = 0
-                  for row in csv_reader:
-                        map.append(row)
-            csv_file.close
+            map = BudgetUtils.getCsvFileAsList ( filename )
+
             return map
 
 def ExactMatch ( instr = "", pattern = "" ):
