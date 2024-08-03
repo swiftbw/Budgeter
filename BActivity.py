@@ -231,8 +231,6 @@ class BActivity:
                                     row [ 'Counterparty' ] = self._counterpartyMaps [ pattern ]
                   else:
                         row [ 'Counterparty' ] = bmap.getMappedCounterparty ( row [ 'Counterparty' ] )
-                        print ( 'BudgetMap class support not yet implemented!  Exitting...\n')
-                        sys.exit ( 0 )
             return
       def counterpartyMatches ( self ):
             matchDict = {}
@@ -331,9 +329,7 @@ class BActivity:
                               if ExactMatch ( row [ 'Counterparty' ], pattern ):
                                     row [ 'Category' ] = self._categoryMaps [ pattern ]
                   else:
-                        row [ 'Category' ] = bmap.getMappedCategory ( row [ 'Category' ] )
-                        print ( 'BudgetMap Class not implemented yet!  Exitting...\n' )
-                        sys.exit ( 0 )
+                        row [ 'Category' ] = bmap.getMappedCategory ( row [ 'Counterparty' ] )
             return
       def categoryMatches ( self ):
             for row in self._crecords:

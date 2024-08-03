@@ -76,13 +76,27 @@ def WildCardMatch ( instr = "", pattern = "" ):
 class BudgetMap:
       def __init__( self, filename = "" ):
             if filename != "":
-                  self._budgetmap = getCsvFileAsList ( filename )
+                  self._budgetMap = getCsvFileAsList ( filename )
             else:
-                  self._budgetmap = []
+                  self._budgetMap = []
       def getMappedCounterparty ( self, cpty ):
-            return "hahahha"
+            if self._budgetMap == None or self._budgetMap == []:
+                  print ( "ERROR:  No BudgetMap Loaded when trying to map " + str ( cpty ) + ".  Exitting...\n" )
+                  sys.exit ( 0 )
+            for i in self._budgetMap:
+                  if WildCardMatch ( cpty, i[ 'CPartyMatch' ] ):
+                        return i[ 'Counterparty' ]
+            print ( "WARNING:  Couldn't find match for Counterparty " + str ( cpty ) + " in BudgetMap.  Setting to ''.\n" )
+            return ""
       def getMappedCategory ( self, ctgy ):
-            return "hahahahhah"
+            if self._budgetMap == None or self._budgetMap == []:
+                  print ( "ERROR:  No BudgetMap Loaded when trying to map " + str ( ctgy ) + ".  Exitting...\n" )
+                  sys.exit ( 0 )
+            for i in self._budgetMap:
+                  if ExactMatch ( ctgy, i[ 'Counterparty' ] ):
+                        return i[ 'Category' ]
+            print ( "WARNING:  Couldn't find match for Counterparty " + str ( ctgy ) + " in BudgetMap.  Setting to ''.\n" )
+            return ""
 
 def main ( ):
       files = getBudgetFiles ()

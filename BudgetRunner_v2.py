@@ -29,10 +29,10 @@ def main():
 
       a.uploadBudgetMaps ( files['BudgetMap'] )
       a.uploadOverrides ( files['OverrideMaps'] )
-      a.updateCounterparties ( )
-#      a.updateCounterparties ( bmap )      
-      a.updateCategories ( )
-#      a.updateCategories ( bmap )      
+#      a.updateCounterparties ( )
+      a.updateCounterparties ( bmap )      
+#      a.updateCategories ( )
+      a.updateCategories ( bmap )      
       a.applyOverrides ( )
       a.write ( files['MergedBudgetData'] )
       nbmdata = files['BudgetDataDir'] + 'NewBudgetMap.csv'
