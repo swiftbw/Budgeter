@@ -167,7 +167,6 @@ class BActivity:
             ''' 
             getRecords returns the list of account entries that match the categ argument, or all records if categ is not provided.
             '''
-
             recs = []
             if categ == None:
                   return self._crecords
@@ -223,39 +222,9 @@ class BActivity:
                         filehandle.close()
                   except:
                         print ( "ERROR in write except\n" )
-      def updateCounterparties ( self, bmap = None ):
+      def updateCounterparties ( self, bmap ):
             for row in self._crecords:
-                  if bmap == None:
-                        for pattern in self._counterpartyMaps:
-                              if WildCardMatch ( row [ 'Counterparty' ], pattern ):
-                                    row [ 'Counterparty' ] = self._counterpartyMaps [ pattern ]
-                  else:
-                        row [ 'Counterparty' ] = bmap.getMappedCounterparty ( row [ 'Counterparty' ] )
-            return
-      def counterpartyMatches ( self ):
-            matchDict = {}
-            for row in self._crecords:
-                  key = row['Counterparty']
-                  matchDict[key] = list()
-                  for pattern in self._counterpartyMaps:
-                        if WildCardMatch ( key, pattern ):
-                              matchDict[key].append(pattern)
-            return matchDict
-      def uploadBudgetMaps ( self, filename ):
-            map = self.uploadMaps ( filename )
-            self._budgetMaps = {}
-            self._counterpartyMaps = {}
-            self._categoryMaps = {}
-
-            for i in map:
-                  self._counterpartyMaps[i['CPartyMatch']] = i['Counterparty']
-                  ky = i['Counterparty']
-                  vl = i['Category']
-                  if ( self._validCategories.count ( vl ) != 0 ):
-                        self._categoryMaps[i['Counterparty']] = i['Category']
-                  else:
-                        print ( 'Unable to find Category ' + vl + ' in valid Categories in Category Map entry:  ' + ky + ', ' + vl + '.  Excluding.' )                  
-                        self._categoryMaps[i['Counterparty']] = 'Unassigned'
+                  row [ 'Counterparty' ] = bmap.getMappedCounterparty ( row [ 'Counterparty' ] )
             return
       def writeRecordsForCat ( self, filename, cat = None, keys = [ 'Counterparty', 'Counterparty', 'Category'] ):
             ''' 
@@ -314,42 +283,10 @@ class BActivity:
             except Exception as e:
                   print ( e )
                   print ( "ERROR in writeBudgetMaps except\n" )
-      def uploadCounterpartyMaps ( self, filename ):
-            map = self.uploadMaps ( filename )
-            self._counterpartyMaps = {}
-            for i in map:
-                  if i['Counterparty'][0] != '#':
-                        self._counterpartyMaps[i['Counterparty']] = i['Map']
-            return
-      def updateCategories ( self, bmap = None ):
+      def updateCategories ( self, bmap ):
             for row in self._crecords:
                   row [ 'Category' ] = 'Unassigned'
-                  if bmap == None:
-                        for pattern in self._categoryMaps:
-                              if ExactMatch ( row [ 'Counterparty' ], pattern ):
-                                    row [ 'Category' ] = self._categoryMaps [ pattern ]
-                  else:
-                        row [ 'Category' ] = bmap.getMappedCategory ( row [ 'Counterparty' ] )
-            return
-      def categoryMatches ( self ):
-            for row in self._crecords:
-                  row [ 'Category' ] = 'Unassigned'
-                  for pattern in self._categoryMaps:
-                        if ExactMatch ( row [ 'Counterparty' ], pattern ):
-                              row [ 'Category' ] = self._categoryMaps [ pattern ]
-            return ctgymatchdict
-      def uploadCategoryMaps ( self, filename ):
-            map = self.uploadMaps ( filename )
-            self._categoryMaps = {}
-
-            for i in map:
-                  ky = i['Counterparty']
-                  vl = i['Category']
-
-                  if ( self._validCategories.count ( vl ) != 0 ) and ky[0] != '#':
-                        self._categoryMaps[i['Counterparty']] = i['Category']
-                  else:
-                        print ( 'Unable to find Category ' + vl + ' in valid Categories in Category Map entry:  ' + ky + ', ' + vl + '.  Excluding.' )
+                  row [ 'Category' ] = bmap.getMappedCategory ( row [ 'Counterparty' ] )
             return
       
       def getValidCategories ( self, filename ):
@@ -375,24 +312,6 @@ class BActivity:
             map = BudgetUtils.getCsvFileAsList ( filename )
 
             return map
-
-def ExactMatch ( instr = "", pattern = "" ):
-      response = True
-      if instr != pattern:
-            return False
-      else:
-            return True
-
-def WildCardMatch ( instr = "", pattern = "" ):
-      response = True
-      if pattern[0] == '*':
-            wildcard = True
-            pattern = pattern[1:]
-
-      if instr.find(pattern) == -1:
-            return False
-      else:
-            return True
 
 def main():
       rootdir = os.environ['HOME'] # root directory for all input, output, and config files.
