@@ -16,14 +16,17 @@ def getBudgetFiles ( ):
 
       bofafilenames = [ 'BofAExportData20240101_20240331.csv',
                         'BofAExportData20240401_20240630.csv',
-                        'BofAExportData20240701_20240930.csv'
+                        'BofAExportData20240701_20240930.csv',
+                        'BofAExportData20241001_20241231.csv'
                         ]
       chasefilenames = ['Chase1964_Activity20240101_20240331.CSV',
                         'Chase1964_Activity20240401_20240630.CSV',
                         'Chase1964_Activity20240701_20240930.CSV',
+                        'Chase1964_Activity20241001_20241231.CSV',
                         'Chase5436_Activity20240101_20240331.CSV',
                         'Chase5436_Activity20240401_20240630.CSV',
-                        'Chase5436_Activity20240701_20240930.CSV'
+                        'Chase5436_Activity20240701_20240930.CSV',
+                        'Chase5436_Activity20241001_20241231.CSV'
                         ]
                         
       mbdfilename = budgetdatadir + 'MergedBudgetData.csv'
