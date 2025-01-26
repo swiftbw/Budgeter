@@ -323,16 +323,5 @@ def main():
       vcfilename = configdir + 'BudgetCategories.csv'
       overridefilename = configdir + 'OverrideMaps.csv'
 
-      datadir = 'BudgetData2024/'
-      bofafilenames = [ 'BofAExportData-20240101-20240331.csv',
-                        'BofAExportData-20240401-20240608.csv', ]
-      chasefilenames = ['Chase1964_Activity20240101_20240331.CSV',
-                        'Chase1964_Activity20240401_20240608.CSV',
-                        'Chase5436_Activity20240101_20240331.CSV',
-                        'Chase5436_Activity20240401_20240608.CSV'
-                        ]
-                        
-      budgetdatadir = budgetdir + datadir
-
 if __name__ == "__main__":
       main()

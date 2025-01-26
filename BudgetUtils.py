@@ -11,22 +11,22 @@ def getBudgetFiles ( ):
       vcfilename = configdir + 'ValidCategories.csv'
       overridefilename = configdir + 'OverrideMaps.csv'
 
-      datadir = 'BudgetData2024/'
+      datadir = 'BudgetData2025/'
       budgetdatadir = budgetdir + datadir
 
-      bofafilenames = [ 'BofAExportData20240101_20240331.csv',
-                        'BofAExportData20240401_20240630.csv',
-                        'BofAExportData20240701_20240930.csv',
-                        'BofAExportData20241001_20241231.csv'
+      bofafilenames = [ 'BofAExportData20250101_20250331.csv',
+                        'BofAExportData20250401_20250630.csv',
+                        'BofAExportData20250701_20250930.csv',
+                        'BofAExportData20251001_20251231.csv'
                         ]
-      chasefilenames = ['Chase1964_Activity20240101_20240331.CSV',
-                        'Chase1964_Activity20240401_20240630.CSV',
-                        'Chase1964_Activity20240701_20240930.CSV',
-                        'Chase1964_Activity20241001_20241231.CSV',
-                        'Chase5436_Activity20240101_20240331.CSV',
-                        'Chase5436_Activity20240401_20240630.CSV',
-                        'Chase5436_Activity20240701_20240930.CSV',
-                        'Chase5436_Activity20241001_20241231.CSV'
+      chasefilenames = ['Chase1964_Activity20250101_20250331.CSV',
+                        'Chase1964_Activity20250401_20250630.CSV',
+                        'Chase1964_Activity20250701_20250930.CSV',
+                        'Chase1964_Activity20251001_20251231.CSV',
+                        'Chase5436_Activity20250101_20250331.CSV',
+                        'Chase5436_Activity20250401_20250630.CSV',
+                        'Chase5436_Activity20250701_20250930.CSV',
+                        'Chase5436_Activity20251001_20251231.CSV'
                         ]
                         
       mbdfilename = budgetdatadir + 'MergedBudgetData.csv'
