@@ -27,14 +27,11 @@ def main():
 
       bmap = BudgetUtils.BudgetMap (files['BudgetMap'])
 
-#      a.uploadBudgetMaps ( files['BudgetMap'] )
       a.uploadOverrides ( files['OverrideMaps'] )
       a.updateCounterparties ( bmap )      
       a.updateCategories ( bmap )      
       a.applyOverrides ( )
       a.write ( files['MergedBudgetData'] )
-#      nbmdata = files['BudgetDataDir'] + 'NewBudgetMap.csv'
-#      a.writeBudgetMaps ( nbmdata )
 
       u = BActivity()
       u.load(a.getRecords('Unassigned'))

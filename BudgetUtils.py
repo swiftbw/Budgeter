@@ -14,10 +14,10 @@ def getBudgetFiles ( ):
       datadir = 'BudgetData2025/'
       budgetdatadir = budgetdir + datadir
 
-      bofafilenames = [ 'BofAExportData20250101_20250331.csv',
-                        'BofAExportData20250401_20250630.csv',
-                        'BofAExportData20250701_20250930.csv',
-                        'BofAExportData20251001_20251231.csv'
+      bofafilenames = [ 'BofAExportData20250101_20250331.CSV',
+                        'BofAExportData20250401_20250630.CSV',
+                        'BofAExportData20250701_20250930.CSV',
+                        'BofAExportData20251001_20251231.CSV'
                         ]
       chasefilenames = ['Chase1964_Activity20250101_20250331.CSV',
                         'Chase1964_Activity20250401_20250630.CSV',

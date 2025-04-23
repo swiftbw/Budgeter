@@ -133,32 +133,35 @@ class BActivity:
             self._overrideMaps = {}
 
             if (self._filename != ""):
-                  with open(self._filename, mode='r', encoding = 'utf-8-sig') as csv_file:
-                        csv_reader = csv.DictReader(csv_file)
-                        line_count = 0
-                        for row in csv_reader:
-                              cdentry = {}
-                              for key in self._headers:
-                                    if key == 'Month':
-                                          dt = row[self._headerMap[self._ftype]['Date']]
-                                          dto = datetime.datetime.strptime(dt, '%m/%d/%Y')
-                                          month = dto.strftime('%b')
-                                          cdentry[key] = month
-                                    else:
-                                          if key != 'Source':
-                                                cdentry[key] = row[self._headerMap[self._ftype][key]]
+                  line_count = 0
+                  try:
+                        with open(self._filename, mode='r', encoding = 'utf-8-sig') as csv_file:
+                              csv_reader = csv.DictReader(csv_file)
+                              for row in csv_reader:
+                                    cdentry = {}
+                                    for key in self._headers:
+                                          if key == 'Month':
+                                                dt = row[self._headerMap[self._ftype]['Date']]
+                                                dto = datetime.datetime.strptime(dt, '%m/%d/%Y')
+                                                month = dto.strftime('%b')
+                                                cdentry[key] = month
                                           else:
-                                                if self._ftype == 'CHASE':
-                                                      cdentry[key] = "Chase"
-                                                else:
+                                                if key != 'Source':
                                                       cdentry[key] = row[self._headerMap[self._ftype][key]]
-                              self._crecords.append(cdentry)
-                              self._records.append(row)
-                              if line_count == 0:
-                                    line_count += 1
-                              else:
-                                    line_count += 1
-                        csv_file.close()
+                                                else:
+                                                      if self._ftype == 'CHASE':
+                                                            cdentry[key] = "Chase"
+                                                      else:
+                                                            cdentry[key] = row[self._headerMap[self._ftype][key]]
+                                    self._crecords.append(cdentry)
+                                    self._records.append(row)
+                                    if line_count == 0:
+                                          line_count += 1
+                                    else:
+                                          line_count += 1
+                              csv_file.close()
+                  except:
+                        print (f'Unable to process {self._filename}.  Continuing')
                   print(f'Processed {line_count} lines.')
             else:
                   print('BActivity object created with no filename.')
