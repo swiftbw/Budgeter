@@ -76,6 +76,28 @@ def WildCardMatch ( instr = "", pattern = "" ):
       else:
             return True
 
+def writeCSVFromDictList ( filename = None, dictList = None, keys = None ):
+            print ( "In writeCSVFromDictList\n")
+
+            if filename == None or dictList == None:
+                  print ("Unable to open file -- None Provided!\n")
+                  return
+
+            try:
+                  filehandle = open(filename, 'w')
+                  
+                  strn ='"' + '","'.join([str(ele) for ele in keys]) +'"\n'
+
+                  filehandle.write ( strn )      
+
+                  for i in dictList:
+                        strn ='"' + '","'.join([str(i[ele]) for ele in keys]) +'"\n'
+                        filehandle.write ( strn )
+                  filehandle.close()
+            except Exception as e:
+                  print ( e )
+                  print ( "ERROR in writeCSVFromDictList except\n" )
+
 class BudgetMap:
       def __init__( self, filename = "" ):
             if filename != "":

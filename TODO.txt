@@ -1,1 +1,13 @@
-Verify that loading from split counterparty and category files yields the same loading from the combined file.
+Verify that loading from split counterparty and category files yields the same loading from the combined file. -- Done
+
+Build Utility for managing addition of unmapped entries to budgetmap file.
+
+Pick List for setting Category.  Should not be able to add new category.
+
+Pick list for choosing Counterparty.  *Should* be able to add new counterparty.
+
+Edit field for match string.
+
+Should have mechanism for testing match field vs other entries in Merged Budget data file.
+
+

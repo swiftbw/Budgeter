@@ -251,10 +251,9 @@ class BActivity:
             except Exception as e:
                   print ( e )
                   print ( "ERROR in writeBudgetMaps except\n" )
+      '''
       def writeBudgetMaps ( self, filename, cat = None ):
-            ''' 
-            writeBudgetMaps loops through the counterpartyMaps dictionary, first extracting 
-            '''
+            # writeBudgetMaps loops through the counterpartyMaps dictionary, first extracting 
             print ( "In Write Budget Maps\n")
 
             for i in self._counterpartyMaps:
@@ -286,6 +285,7 @@ class BActivity:
             except Exception as e:
                   print ( e )
                   print ( "ERROR in writeBudgetMaps except\n" )
+      '''
       def updateCategories ( self, bmap ):
             for row in self._crecords:
                   row [ 'Category' ] = 'Unassigned'
@@ -296,7 +296,7 @@ class BActivity:
             map = self.uploadMaps ( filename )
             self._validCategories = []
 
-            print ("Uploading Valid Categories from; "+filename)
+            print ("Uploading Valid Categories from: "+filename)
 
             for i in map:
                   vl = i['Category']
