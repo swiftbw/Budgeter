@@ -251,41 +251,6 @@ class BActivity:
             except Exception as e:
                   print ( e )
                   print ( "ERROR in writeBudgetMaps except\n" )
-      '''
-      def writeBudgetMaps ( self, filename, cat = None ):
-            # writeBudgetMaps loops through the counterpartyMaps dictionary, first extracting 
-            print ( "In Write Budget Maps\n")
-
-            for i in self._counterpartyMaps:
-                  cpty = self._counterpartyMaps.get(i)
-                  if cpty == None:
-                        print ( 'Cannot find ' + i + ' in cptymap.  skipping\n')
-                        continue
-                  
-                  ctgy = self._categoryMaps.get(cpty)
-                  if ctgy == None:
-                        print ( 'Cannot find ' + cpty + ' in ctgymap.  skipping\n')
-                        continue
-                  self._budgetMaps[i] = ( cpty, ctgy )
-            try:
-                  filehandle = open(filename, 'w')
-                  
-                  filehandle.write ('CPartyMatch,Counterparty,Category\n')
-
-                  for i in self._budgetMaps:
-                        bmval = self._budgetMaps.get(i)
-                        if bmval == None:
-                              print ( "bmval is None!\n" )
-                              continue
-                        strn = '"' + i + '","' + bmval[0] + '","' + bmval[1]+'"\n'
-                        if strn == None:
-                              print ( "None string!\n")
-                        filehandle.write ( strn )
-                  filehandle.close()
-            except Exception as e:
-                  print ( e )
-                  print ( "ERROR in writeBudgetMaps except\n" )
-      '''
       def updateCategories ( self, bmap ):
             for row in self._crecords:
                   row [ 'Category' ] = 'Unassigned'
