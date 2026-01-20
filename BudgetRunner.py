@@ -10,8 +10,8 @@ import BudgetUtils
 from BActivity import BActivity
 
 class BudgetRunner:
-      def __init__ (self):
-            self._files = BudgetUtils.getBudgetFiles ()
+      def __init__ (self, yr = None ):
+            self._files = BudgetUtils.getBudgetFiles ( yr )
       
             self._activity = BActivity()
 
@@ -43,8 +43,8 @@ class BudgetRunner:
             u.writeRecordsForCat(self._files['BudgetDataDir']+'UnassignedBudgetData.csv')
 
 class BudgetControlPanel:
-      def __init__ (self, root):
-            self._budget = BudgetRunner ()
+      def __init__ (self, root, year ):
+            self._budget = BudgetRunner ( year )
 
             self._unassignedRecords = []
             self._unassignedRecordsStringVar = StringVar()
@@ -245,14 +245,16 @@ class BudgetControlPanel:
             # Set Valid Category into Mapping if in the new counterparty configuration
             print ( 'choosing a valid category.' )
             return
-def main ():
+def main ( args ):
       '''
       a = BudgetRunner()
       a.run()
       '''
+
       root = Tk()
-      BudgetControlPanel(root)
+      BudgetControlPanel(root, args[1] )
       root.mainloop()
 
 if __name__ == "__main__":
-      main()
+      main( sys.argv )
+

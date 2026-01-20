@@ -3,7 +3,7 @@ Might be good to make this inherit from dict at some point...
 '''
 import csv, sys, os, datetime
 
-def getBudgetFiles ( ):
+def getBudgetFiles ( year = None ):
       rootdir = os.environ['HOME'] # root directory for all input, output, and config files.
       budgetdir = rootdir + '/Library/Mobile Documents/com~apple~cloudDocs/Documents/Finances/BudgetTracking/'
       configdir = budgetdir + 'BudgeterConfig/'
@@ -11,22 +11,29 @@ def getBudgetFiles ( ):
       vcfilename = configdir + 'ValidCategories.csv'
       overridefilename = configdir + 'OverrideMaps.csv'
 
-      datadir = 'BudgetData2025/'
+      if year == None:
+          year = '2025'
+          print ( '\n\n\nWARNING:  No Year Provided!' )
+
+      print ('Setting to ' + year + '.  Continuing...\n\n\n')
+
+      datadir = 'BudgetData' + year + '/'
+    
       budgetdatadir = budgetdir + datadir
 
-      bofafilenames = [ 'BofAExportData20250101_20250331.CSV',
-                        'BofAExportData20250401_20250630.CSV',
-                        'BofAExportData20250701_20250930.CSV',
-                        'BofAExportData20251001_20251231.CSV'
+      bofafilenames = [ 'BofAExportData' + year + '0101_' + year + '0331.CSV',
+                        'BofAExportData' + year + '0401_' + year + '0630.CSV',
+                        'BofAExportData' + year + '0701_' + year + '0930.CSV',
+                        'BofAExportData' + year + '1001_' + year + '1231.CSV'
                         ]
-      chasefilenames = ['Chase1964_Activity20250101_20250331.CSV',
-                        'Chase1964_Activity20250401_20250630.CSV',
-                        'Chase1964_Activity20250701_20250930.CSV',
-                        'Chase1964_Activity20251001_20251231.CSV',
-                        'Chase5436_Activity20250101_20250331.CSV',
-                        'Chase5436_Activity20250401_20250630.CSV',
-                        'Chase5436_Activity20250701_20250930.CSV',
-                        'Chase5436_Activity20251001_20251231.CSV'
+      chasefilenames = ['Chase1964_Activity' + year + '0101_' + year + '0331.CSV',
+                        'Chase1964_Activity' + year + '0401_' + year + '0630.CSV',
+                        'Chase1964_Activity' + year + '0701_' + year + '0930.CSV',
+                        'Chase1964_Activity' + year + '1001_' + year + '1231.CSV',
+                        'Chase5436_Activity' + year + '0101_' + year + '0331.CSV',
+                        'Chase5436_Activity' + year + '0401_' + year + '0630.CSV',
+                        'Chase5436_Activity' + year + '0701_' + year + '0930.CSV',
+                        'Chase5436_Activity' + year + '1001_' + year + '1231.CSV'
                         ]
                         
       mbdfilename = budgetdatadir + 'MergedBudgetData.csv'
